@@ -49,6 +49,7 @@ Meteor.methods({
     check(setChecked, Boolean);
 
     const task = Tasks.findOne(taskId);
+    const user = task.user();
     if (task.private && task.owner !== this.userId) {
       // If the task is private, make sure only the owner can check it off
       throw new Meteor.Error('not-authorized');
@@ -69,4 +70,12 @@ Meteor.methods({
  
     Tasks.update(taskId, { $set: { private: setToPrivate } });
   },
+});
+
+Tasks.helpers({
+  user() {
+    console.log("calling helper");
+    console.log(this);
+    return Accounts.users.findOne(this.owner);
+  }
 });
