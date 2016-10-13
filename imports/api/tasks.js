@@ -63,12 +63,19 @@ Meteor.methods({
  
     const task = Tasks.findOne(taskId);
  
-    // Make sure only the task owner can make a task private
-    if (task.owner !== this.userId) {
+    // // Make sure only the task owner can make a task private
+    // if (task.owner !== this.userId) {
+    //   throw new Meteor.Error('not-authorized');
+    // }
+
+    // Testing alanning:roles
+    if (!Roles.userIsInRole(this.userId, 'suspended')) {
+      return Tasks.update(taskId, { $set: { private: setToPrivate } });
+    } else {
+      // user not authorized
       throw new Meteor.Error('not-authorized');
     }
  
-    Tasks.update(taskId, { $set: { private: setToPrivate } });
   },
 });
 
